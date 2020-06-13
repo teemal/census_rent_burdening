@@ -27,7 +27,15 @@ def home():
 
 @app.route('/year-select', methods=['GET'])
 def dashboard():
-    return render_template('index.html')    
+    return render_template('index.html')
+
+@app.route('/update_gsheet', methods=['GET'])
+def update_sheet():
+    params = Params()
+    census = Census()
+    google  = Google()
+
+    data = request.args
     acs_year = str(data['year'])
     params.pword_validate(str(data['pword']))
     acs_year = int(data['year']) #as int for validation
@@ -36,7 +44,7 @@ def dashboard():
 
     api =  google.auth('FLASK_ENV')
     wb = google.open_workbook(api, 'FLASK_ENV')
-    return 'yo'
+
 #     fips_codes = {
 #         "001": "Baker",
 #         "003": "Benton",
@@ -76,76 +84,80 @@ def dashboard():
 #         "071": "Yamhill"
 #     }
     
-#     API_KEY = census.get_census_api_key()
-#     URL = 'https://api.census.gov/data/'
-#     YEAR = acs_year + '/'
-#     DATA_SET = 'acs/acs5'
-#     BASE_URL = URL + YEAR + DATA_SET
-#     GET = '?get='
-#     MED_GROSS_RENT = 'B25064_001E'
-#     MED_GROSS_RENT_DOLLARS = 'B25064_001E'
-#     GROSS_RENT_TOTAL = 'B25063_001E'
-#     GROSS_RENT_PERCENT_INCOME_25_30 = 'B25070_006E'
-#     GROSS_RENT_PERCENT_INCOME_30_34 = 'B25070_007E'
-#     GROSS_RENT_PERCENT_INCOME_35_39 = 'B25070_008E'
-#     GROSS_RENT_PERCENT_INCOME_40_49 = 'B25070_009E'
-#     GROSS_RENT_PERCENT_INCOME_50_PLUS = 'B25070_010E'
-#     TOTAL_POPULATION_BURDENED = 'B25070_001E'
-#     MED_INCOME = 'B06011_001E'
+    API_KEY = census.get_census_api_key()
+    URL = 'https://api.census.gov/data/'
+    YEAR = acs_year + '/'
+    DATA_SET = 'acs/acs5'
+    BASE_URL = URL + YEAR + DATA_SET
+    GET = '?get='
+    MED_GROSS_RENT = 'B25064_001E'
+    MED_GROSS_RENT_DOLLARS = 'B25064_001E'
+    GROSS_RENT_TOTAL = 'B25063_001E'
+    GROSS_RENT_PERCENT_INCOME_25_30 = 'B25070_006E'
+    GROSS_RENT_PERCENT_INCOME_30_34 = 'B25070_007E'
+    GROSS_RENT_PERCENT_INCOME_35_39 = 'B25070_008E'
+    GROSS_RENT_PERCENT_INCOME_40_49 = 'B25070_009E'
+    GROSS_RENT_PERCENT_INCOME_50_PLUS = 'B25070_010E'
+    TOTAL_POPULATION_BURDENED = 'B25070_001E'
+    MED_INCOME = 'B06011_001E'
 
 
-#     COMMA = ','
-#     FOR = '&for='
-#     IN = '&in='
-#     PLUS = '+'
-#     STATE = 'state:'
-#     ALL_STATES = 'state:*'
-#     COUNTY = 'county:'
-#     OREGON = '41'
-#     DESCHUTES = '017'
-#     CROOK = '013'
-#     JEFFERSON = '031'
+    COMMA = ','
+    FOR = '&for='
+    IN = '&in='
+    PLUS = '+'
+    STATE = 'state:'
+    ALL_STATES = 'state:*'
+    COUNTY = 'county:'
+    OREGON = '41'
+    DESCHUTES = '017'
+    CROOK = '013'
+    JEFFERSON = '031'
 
-#     # FINAL_URL = https://api.census.gov/data/2018/acs/acs5?get=B25070_010E&for=county:*&in=state:41
-#     # this string will get the population of individuals that pay 30 - 50% of their income
-#     # in rent for all counties in oregon.
-#     # i.e. one list being ['5690', '41', '047'], meaning 5690 people sampled spend 50% or more of
-#     # their income on rent in the county 047 (FIPS code for Marion county) in the state 41 (FIPS code for Oregon)
-#     FINAL_URL = BASE_URL \
-#         + GET + GROSS_RENT_PERCENT_INCOME_50_PLUS + COMMA\
-#         + GROSS_RENT_PERCENT_INCOME_25_30 + COMMA\
-#         + GROSS_RENT_PERCENT_INCOME_30_34 + COMMA\
-#         + GROSS_RENT_PERCENT_INCOME_35_39 + COMMA\
-#         + GROSS_RENT_PERCENT_INCOME_40_49 + COMMA\
-#         + TOTAL_POPULATION_BURDENED\
-#         + FOR + COUNTY + '*'\
-#         + IN + STATE + OREGON
+    # FINAL_URL = https://api.census.gov/data/2018/acs/acs5?get=B25070_010E&for=county:*&in=state:41
+    # this string will get the population of individuals that pay 30 - 50% of their income
+    # in rent for all counties in oregon.
+    # i.e. one list being ['5690', '41', '047'], meaning 5690 people sampled spend 50% or more of
+    # their income on rent in the county 047 (FIPS code for Marion county) in the state 41 (FIPS code for Oregon)
+    FINAL_URL = BASE_URL \
+        + GET + GROSS_RENT_PERCENT_INCOME_50_PLUS + COMMA\
+        + GROSS_RENT_PERCENT_INCOME_25_30 + COMMA\
+        + GROSS_RENT_PERCENT_INCOME_30_34 + COMMA\
+        + GROSS_RENT_PERCENT_INCOME_35_39 + COMMA\
+        + GROSS_RENT_PERCENT_INCOME_40_49 + COMMA\
+        + TOTAL_POPULATION_BURDENED\
+        + FOR + COUNTY + '*'
 
-#     r = requests.get(url=FINAL_URL + API_KEY)
-#     # values is the return value from the census  API
-#     values = r.json()
-#     df = pd.DataFrame(values)
-#     #headers for df
-#     df.columns = ['GROSS_RENT_PERCENT_INCOME_50_PLUS', 'GROSS_RENT_PERCENT_INCOME_25_30', 'GROSS_RENT_PERCENT_INCOME_30_34',
-#                   'GROSS_RENT_PERCENT_INCOME_35_39', 'GROSS_RENT_PERCENT_INCOME_40_49', 'TOTAL_POPULATION_BURDENED', 'state', 'county']
-#     # pandas return copies so you must place it in a variable
-#     df = df.drop([0])
+    r = requests.get(url=FINAL_URL + API_KEY)
+    # values is the return value from the census  API
+    values = r.json()
+    df = pd.DataFrame(values)
+    #headers for df
+    df.columns = ['GROSS_RENT_PERCENT_INCOME_50_PLUS', 'GROSS_RENT_PERCENT_INCOME_25_30', 'GROSS_RENT_PERCENT_INCOME_30_34',
+                  'GROSS_RENT_PERCENT_INCOME_35_39', 'GROSS_RENT_PERCENT_INCOME_40_49', 'TOTAL_POPULATION_BURDENED', 'state', 'county']
+    # # pandas return copies so you must place it in a variable
+    # df = df.drop([0])
 
-#     # this df takes in all the populations of people rent  burdened (25-50% of income), sums them,
-#     # and then divides the sum by the total population of those surveyed to get
-#     # the percentage of people burdened, multiplies that value by 100 to get a percent,
-#     # and then maps the county name from the county  fips code. 
-#     trans_df = pd.DataFrame(df['TOTAL_POPULATION_BURDENED'])
-#     trans_df['PERCENT RENT BURDENED'] = (pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_25_30']) + pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_30_34']) + pd.to_numeric(
-#         df['GROSS_RENT_PERCENT_INCOME_35_39']) + pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_40_49'])) / pd.to_numeric(df['TOTAL_POPULATION_BURDENED'])
-#     trans_df['PERCENT SEVERLY RENT BURDENED'] = pd.to_numeric(
-#         df['GROSS_RENT_PERCENT_INCOME_50_PLUS']) / pd.to_numeric(df['TOTAL_POPULATION_BURDENED'])
-#     # get percents from floats
-#     trans_df['PERCENT SEVERLY RENT BURDENED'] = trans_df['PERCENT SEVERLY RENT BURDENED'] * 100
-#     trans_df['PERCENT RENT BURDENED'] = trans_df['PERCENT RENT BURDENED'] * 100
+    # # this df takes in all the populations of people rent  burdened (25-50% of income), sums them,
+    # # and then divides the sum by the total population of those surveyed to get
+    # # the percentage of people burdened, multiplies that value by 100 to get a percent,
+    # # and then maps the county name from the county  fips code. 
+    # trans_df = pd.DataFrame(df['TOTAL_POPULATION_BURDENED'])
+    # trans_df['PERCENT RENT BURDENED'] = (pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_25_30']) + pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_30_34']) + pd.to_numeric(
+    #     df['GROSS_RENT_PERCENT_INCOME_35_39']) + pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_40_49'])) / pd.to_numeric(df['TOTAL_POPULATION_BURDENED'])
+    # trans_df['PERCENT SEVERLY RENT BURDENED'] = pd.to_numeric(
+    #     df['GROSS_RENT_PERCENT_INCOME_50_PLUS']) / pd.to_numeric(df['TOTAL_POPULATION_BURDENED'])
+    # # get percents from floats
+    # trans_df['PERCENT SEVERLY RENT BURDENED'] = trans_df['PERCENT SEVERLY RENT BURDENED'] * 100
+    # trans_df['PERCENT RENT BURDENED'] = trans_df['PERCENT RENT BURDENED'] * 100
 
-#     trans_df['COUNTY FIPS'] = df['county']
-#     trans_df['COUNTY NAME'] = df['county'].map(fips_codes)
+    # trans_df['COUNTY FIPS'] = df['county']
+    # print(trans_df)
+    df['fips'] = df['state'] + df['county']
+    df.drop(['state', 'county'], axis=1, inplace=True)
+    print(df)
+    return('yo')
+    # trans_df['COUNTY NAME'] = df['county'].map(fips_codes)
 #     # #gsheet
 #     sheet = google.worksheet_by_title_wrapper(wb, 'viz burden data')
 #     google.clear_wrapper(sheet)
