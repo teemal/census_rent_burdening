@@ -27,15 +27,7 @@ def home():
 
 @app.route('/year-select', methods=['GET'])
 def dashboard():
-    return render_template('index.html')
-
-@app.route('/update_gsheet', methods=['GET'])
-def update_sheet():
-    params = Params()
-    census = Census()
-    google  = Google()
-
-    data = request.args
+    return render_template('index.html')    
     acs_year = str(data['year'])
 
     params.pword_validate(str(data['pword']))
