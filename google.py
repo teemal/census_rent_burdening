@@ -24,13 +24,13 @@ class Google(object):
 
     def open_workbook(self, api, env):
         if(os.environ[env] == 'dev'):
-            wb = self._open_workbook(api, 'COIC-dashboard-dev')
+            wb = self._open_workbook(api, 'census_burdening_dev')
         elif(os.environ[env] == 'testing'):
-            wb = self._open_workbook(api, 'COIC-dashboard-testing')
+            wb = self._open_workbook(api, 'census_burdening_testing')
         elif(os.environ[env] == 'staging'):
-            wb = self._open_workbook(api, 'COIC-dashboard-staging')
+            wb = self._open_workbook(api, 'census_burdening_staging')
         else: 
-            wb = self._open_workbook(api, 'COIC-dashboard-production')
+            wb = self._open_workbook(api, 'census_burdening_prod')
         return wb
 
     def _open_workbook(self, api, book_name):    
