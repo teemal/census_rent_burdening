@@ -11,6 +11,7 @@ import pandas as pd
 import os
 import json
 import us
+from datetime import date
 from dotenv import load_dotenv
 from flask import Flask, abort, request, render_template
 from params import Params
@@ -90,7 +91,7 @@ def update_sheet():
 
     df.drop([0], inplace=True)
 
-    #compute burdening, convert to decimal, round to 4 sig fig
+    #compute burdening, convert to percent, round to 4 sig fig
     df['PERCENT RENT BURDENED'] = (((pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_25_30']) + pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_30_34']) + pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_35_39']) + pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_40_49'])) / pd.to_numeric(df['TOTAL_POPULATION_BURDENED'])) * 100).round(4)
     df['PERCENT SEVERLY RENT BURDENED'] = ((pd.to_numeric(df['GROSS_RENT_PERCENT_INCOME_50_PLUS']) / pd.to_numeric(df['TOTAL_POPULATION_BURDENED']))*100).round(4)
 
@@ -99,7 +100,10 @@ def update_sheet():
 
     df.dropna(inplace=True)
 
-    sheet = google.worksheet_by_title_wrapper(wb, 'viz burden data')
+    #make current date title of sheet
+    title = date.today().strftime("%m-%d-%y")
+    
+    sheet = google.new_sheet(wb, title)
     google.clear_wrapper(sheet)
     google.set_dataframe_wrapper(sheet, df, (1, 1))
     return 'ayyyyy'

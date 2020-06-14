@@ -39,6 +39,9 @@ class Google(object):
     def worksheet_by_title_wrapper(self, wb, sheet_title):
         return wb.worksheet_by_title(sheet_title)
 
+    def new_sheet(self, wb, sheet_title):
+        return wb.add_worksheet(str(sheet_title))
+
     def clear_wrapper(self, sheet):
         sheet.clear()
 
