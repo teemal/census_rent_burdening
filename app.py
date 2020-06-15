@@ -11,6 +11,7 @@ import pandas as pd
 import os
 import json
 import us
+from fips import fips_dict
 from datetime import date
 from dotenv import load_dotenv
 from flask import Flask, abort, request, render_template
@@ -97,6 +98,7 @@ def update_sheet():
 
     df['fips'] = df['state fips'] + df['county fips']
     df['state'] = df['state fips'].apply(lambda x: us.states.lookup(x)) #state name from us lib
+    df['county'] = df['fips'].apply(lambda x: fips_dict[x])
 
     df.dropna(inplace=True)
 
