@@ -101,9 +101,9 @@ def update_sheet():
     df.dropna(inplace=True)
 
     #make current date title of sheet
-    title = date.today().strftime("%m-%d-%y")
+    # title = date.today().strftime("%m-%d-%y")
     
-    sheet = google.new_sheet(wb, title)
+    sheet = google.worksheet_by_title_wrapper(wb, 'viz burden data')
     google.clear_wrapper(sheet)
     google.set_dataframe_wrapper(sheet, df, (1, 1))
     return 'ayyyyy'
